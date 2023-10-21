@@ -19,7 +19,7 @@ namespace Plateup_InfiniteReroll
 
         protected override void Initialise()
         {
-            Debug.Log($"[DKatGames] -- Initialise Infinite Reroll");
+            Logger.Log($"Initialise Infinite Reroll");
 
             base.Initialise();
 
@@ -45,7 +45,7 @@ namespace Plateup_InfiniteReroll
 
             // For that we need to tap into the layout.
 
-            //Debug.Log($"[DKatGames] We have a GameInfo: {GameInfo.CurrentSetting},   {GameInfo.IsPreparationTime},   {GameInfo.CurrentDay},   {GameInfo.CurrentScene}");
+            //Logger.Log($"We have a GameInfo: {GameInfo.CurrentSetting},   {GameInfo.IsPreparationTime},   {GameInfo.CurrentDay},   {GameInfo.CurrentScene}");
 
             bool inKitchen = GameInfo.CurrentScene == SceneType.Kitchen;
             bool isPastInitialDay = GameInfo.CurrentDay >= 1;

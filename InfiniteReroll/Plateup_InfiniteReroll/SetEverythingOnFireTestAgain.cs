@@ -12,7 +12,7 @@
 
 //    protected override void Initialise()
 //    {
-//      UnityEngine.Debug.Log($"[DKatGames] -- Initialise SetEverythingOnFire");
+//      Logger.Debug.Log($"Initialise SetEverythingOnFire");
 //      //base.Initialise();
 //      //appliancesQuery = GetEntityQuery(new QueryHelper()
 //      //  .All(typeof(CAppliance))
@@ -41,7 +41,7 @@
 //      //  }
 //      //}
 
-//      //UnityEngine.Debug.Log($"{Time.TotalTime},  {appliancesNames}");
+//      //Logger.Log($"{Time.TotalTime},  {appliancesNames}");
 
 //      //appliances.Dispose();
 //      //var appliances = appliancesQuery.ToEntityArray(Allocator.TempJob);

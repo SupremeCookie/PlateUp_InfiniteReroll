@@ -45,9 +45,6 @@ namespace Plateup_InfiniteReroll
 
         public void OnUpdate(float deltaSeconds)
         {
-            // ShopRerollTrigger // This is an asset, it has the ID: 1171429989
-            // Gotta figure out how to spawn those? It could be an appliance?
-
             if (IsActive)
             {
                 TryLoadRerollAppliance();
@@ -55,7 +52,7 @@ namespace Plateup_InfiniteReroll
                 if (hasSetRerollEntity)
                 {
                     // Default entities are 2 different entities
-                    // [INFO][DKatGames] Components on reroll entity: 16777561, 16777778, 
+                    // [INFO] [DKatGames] Components on reroll entity: 16777561, 16777778, 
 
                     // After a frame we've got
                     // [INFO] [DKatGames] Components on reroll entity: 16777562, 16777563, 16777578, 16777604, 16777620, 16777778, 16777780, 16778091, 16778094, 67109265, 67109790, 1090519419, 1090519883, 1090519910, 
@@ -67,7 +64,7 @@ namespace Plateup_InfiniteReroll
                         componentsString += $"({comp.TypeIndex}, {comp.GetManagedType()}), ";
                     }
 
-                    Debug.Log($"[DKatGames] Components on reroll entity: {componentsString}");
+                    Logger.Log($"Components on reroll entity: {componentsString}");
 
                     bool hasCreateApplianceComponent = entityManager.HasComponent<CCreateAppliance>(rerollEntity);
                     bool hasProperlyInstantiated = !hasCreateApplianceComponent;
@@ -83,11 +80,11 @@ namespace Plateup_InfiniteReroll
 
 
             var items = blueprints.ToEntityArray(Unity.Collections.Allocator.TempJob);
-            Debug.Log($"Count: {items.Count()}");
+            Logger.Log($"Count: {items.Count()}");
             foreach (var item in items)
             {
                 var bpData = entityManager.GetComponentData<CApplianceBlueprint>(item);
-                Debug.Log($"bpData: {bpData.Appliance}, {bpData.IsCopy}");
+                Logger.Log($"bpData: {bpData.Appliance}, {bpData.IsCopy}");
             }
 
             if ((!desiredState && IsActive) || (desiredState && items.Count() > 0 && !IsActive))
@@ -112,18 +109,18 @@ namespace Plateup_InfiniteReroll
         {
             if (GameData.Main == null)
             {
-                Debug.Log($"[DKatGames] returning as Main GameData is null");
+                Logger.Log($"returning as Main GameData is null");
                 return;
             }
 
             const int rerollID = 1171429989;
             //bool hasMyAppliance = GameData.Main.Has<Appliance>(rerollID);
-            //Debug.Log($"[DKatGames] do we have my Appliance?: {hasMyAppliance}");
+            //Logger.Log($"do we have my Appliance?: {hasMyAppliance}");
             if (!hasSetRerollEntity)
             {
                 GameData.Main.TryGet<Appliance>(rerollID, out var applianceGameDataObject);
-                Debug.Log($"[DKatGames] Has Appliance Data: {applianceGameDataObject != null}");
-                Debug.Log($"[DKatGames] appliance: {applianceGameDataObject.ID}, {applianceGameDataObject.Name}, {applianceGameDataObject.Info}, {applianceGameDataObject.Prefab.name}");
+                Logger.Log($"Has Appliance Data: {applianceGameDataObject != null}");
+                Logger.Log($"appliance: {applianceGameDataObject.ID}, {applianceGameDataObject.Name}, {applianceGameDataObject.Info}, {applianceGameDataObject.Prefab.name}");
 
                 hasSetRerollEntity = true;
 

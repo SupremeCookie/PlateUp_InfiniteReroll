@@ -122,6 +122,7 @@
   <ItemGroup>
     <Compile Include="ApplianceIDDictionary.cs" />
     <Compile Include="CInfiniteReroll.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ReRollLogic.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="SetEverythingOnFireTestAgain.cs" />
