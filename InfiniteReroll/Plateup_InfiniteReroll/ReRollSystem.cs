@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Kitchen;
+using KitchenData;
 using KitchenMods;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -37,16 +39,6 @@ namespace Kitchen_InfiniteReroll
         {
             interaction_data.Attempt.Type = InteractionType.Act;
 
-            //Logger.Log($"Should Act: {base.ShouldAct(ref interaction_data)}");
-
-            //Logger.Log($"Data: AllowActOrGrab: {AllowActOrGrab}");
-            //Logger.Log($"Data: AttemptType: {interaction_data.Attempt.Type}, RequiredType: {base.RequiredType}");
-
-            //Logger.Log($"Test: {interaction_data.Attempt.Type == InteractionType.Act || interaction_data.Attempt.Type == InteractionType.Grab}");
-            //Logger.Log($"Test: {(!RequirePress || !interaction_data.Attempt.IsHeld)}");
-
-            //Logger.Log($"interaction_data.Attempt.IsHeld: {interaction_data.Attempt.IsHeld}");
-
             return base.ShouldAct(ref interaction_data);
         }
 
@@ -61,9 +53,13 @@ namespace Kitchen_InfiniteReroll
 
         protected override void Perform(ref InteractionData data)
         {
+            foreach (var entity in Main.instance.GetAllPositionedEntities().ToEntityArray(Allocator.Temp))
+            {
+                Logger.LogEntityComponents(entity, "All-Positions");
+            }
+
             if (data.Target != Entity.Null && GameInfo.IsPreparationTime)
             {
-                //Logger.Log($"Performing ReRollSystem's Perform method:  {data.Context}, {data.Interactor}, {data.Attempt}, {data.ShouldAct}, {data.Target}");
                 Logger.Log($"Reroll All Blueprints, {Time.TotalTime}, {GameInfo.IsPreparationTime}");
                 ReRollAllBlueprints();
             }
@@ -71,59 +67,46 @@ namespace Kitchen_InfiniteReroll
 
         private void ReRollAllBlueprints()
         {
-            Vector3[] positions = new Vector3[20];
-            Entity[] entityToRemove = new Entity[20];
-
-            int itemIndex = 0;
-            int letterIndex = 0;
-
             var bpQuery = Main.instance.GetBlueprintEntityQuery();
             var items = bpQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
             Logger.Log($"Blueprint Items Count: {items.Length}");
-
-            foreach (var item in items)
-            {
-                Logger.Log($"BP component count: {EntityManager.GetComponentCount(item)}");
-                positions[itemIndex] = EntityManager.GetComponentData<CPosition>(item).Position;
-                entityToRemove[itemIndex] = item;
-                itemIndex++;
-            }
-
-            letterIndex = itemIndex;
+            RerollEntities(ref items);
 
             var letterBPQuery = Main.instance.GetLetterBlueprintQuery();
-
             var letterItems = letterBPQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
             Logger.Log($"Store Entity Count: {letterItems.Length}");
+            RerollEntities(ref letterItems);
+        }
 
-            foreach (var letterItem in letterItems)
+        private void RerollEntities(ref NativeArray<Entity> entities)
+        {
+            foreach (var item in entities)
             {
-                Logger.Log($"Letter Item component count: {EntityManager.GetComponentCount(letterItem)}");
-                positions[letterIndex] = EntityManager.GetComponentData<CPosition>(letterItem).Position;
-                entityToRemove[letterIndex] = letterItem;
+                ShoppingTags tags = ((GetOrDefault<SDay>().Day % 5 != 0) ? ShoppingTagsExtensions.DefaultShoppingTag : ShoppingTags.Decoration);
+                if ((Require<CHeldBy>(item, out CHeldBy comp) && Has<CPlayer>(comp)) || !Require<CPosition>(item, out CPosition comp2))
+                {
+                    CreateShop(isFixedLocation: false, default(Vector3), tags);
+                }
+                else
+                {
+                    CreateShop(isFixedLocation: true, comp2, tags);
+                }
 
-                letterIndex++;
+                EntityManager.DestroyEntity(item);
             }
+        }
 
-            int finalIndex = letterIndex;
 
-            for (int i = 0; i < finalIndex; ++i)
+        private void CreateShop(bool isFixedLocation, Vector3 location, ShoppingTags tags)
+        {
+            Entity entity = base.EntityManager.CreateEntity(typeof(CNewShop));
+            base.EntityManager.AddComponentData(entity, new CNewShop
             {
-                Entity newEntity = EntityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition));
-                EntityManager.SetComponentData(newEntity, new CCreateAppliance() { ID = 1063254979, });     // Note DK: 1063254979 is blueprint appliance ID
-                EntityManager.SetComponentData(newEntity, new CPosition() { Position = positions[i], });
-
-                // This now makes a blueprint, but the blueprint is empty. So I gotta figure out how to get a random blueprint :)
-            }
-
-            for (int i = 0; i < finalIndex; ++i)
-            {
-                EntityManager.DestroyEntity(entityToRemove[i]);
-            }
-
-
-            items.Dispose();
-            letterBPQuery.Dispose();
+                Tags = tags,
+                Location = location,
+                FixedLocation = isFixedLocation,
+                StartOpen = true
+            });
         }
     }
 }
