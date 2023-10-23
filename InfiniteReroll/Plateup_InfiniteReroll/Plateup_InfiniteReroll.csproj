@@ -7,8 +7,8 @@
     <ProjectGuid>{FA5E1DA9-D803-4BC0-AB7C-AA2DEF9936C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kitchen_InfiniteReroll</RootNamespace>
-    <AssemblyName>Plateup_InfiniteReroll</AssemblyName>
+    <RootNamespace>Kitchen.DKatGames.InfiniteReroll</RootNamespace>
+    <AssemblyName>Kitchen.DKatGames.InfiniteReroll</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
@@ -120,15 +120,12 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ApplianceIDDictionary.cs" />
     <Compile Include="CInfiniteReroll.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ReRollEntityLogic.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ReRollSystem.cs" />
-    <Compile Include="SetEverythingOnFireTestAgain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpawnBlueprintTest.cs" />
     <EmbeddedResource Include="Properties\Plateup_InfiniteReroll.rd.xml" />
   </ItemGroup>
   <ItemGroup>

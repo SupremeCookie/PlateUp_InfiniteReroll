@@ -2,7 +2,7 @@
 #define EnableLogging
 #endif
 
-using Kitchen_InfiniteReroll;
+using Kitchen.DKatGames.InfiniteReroll;
 using Unity.Entities;
 
 public static class Logger

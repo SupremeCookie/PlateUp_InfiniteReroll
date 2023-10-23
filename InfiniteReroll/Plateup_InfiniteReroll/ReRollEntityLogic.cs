@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using Kitchen;
 using KitchenData;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Kitchen_InfiniteReroll
+namespace Kitchen.DKatGames.InfiniteReroll
 {
     public class ReRollEntityLogic
     {

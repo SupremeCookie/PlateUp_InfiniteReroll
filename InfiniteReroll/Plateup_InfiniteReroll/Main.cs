@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kitchen;
-using KitchenMods;
+﻿using KitchenMods;
 using Unity.Entities;
-using UnityEngine;
 
-// Make my namespace start with Kitchen.
-namespace Kitchen_InfiniteReroll
+namespace Kitchen.DKatGames.InfiniteReroll
 {
     public class Main : GenericSystemBase, IModSystem
     {
@@ -25,16 +17,14 @@ namespace Kitchen_InfiniteReroll
 
             instance = this;
 
-            //bpt = new SpawnBlueprintTest();
-            //bpt.Initialise(EntityManager);
-
             rerollComp = ReRollEntityLogic.Create(EntityManager);
             rerollComp.Init();
         }
 
-
-        // SCInteractionSystem: InteractionSystem, IModSystem // Define the RequiredType property
-
+        // Position the element properly.
+        // Adapt the standard Main/View thing to make this look proper
+        // Figure out how to get to workshop
+        // Test the Release build, and see if the post build instructions are correct!
 
         protected override void OnUpdate()
         {

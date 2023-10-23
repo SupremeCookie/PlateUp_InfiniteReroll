@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using Kitchen;
-using KitchenData;
+﻿using KitchenData;
 using KitchenMods;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Kitchen_InfiniteReroll
+namespace Kitchen.DKatGames.InfiniteReroll
 {
     public class ReRollSystem : InteractionSystem, IModSystem
     {
