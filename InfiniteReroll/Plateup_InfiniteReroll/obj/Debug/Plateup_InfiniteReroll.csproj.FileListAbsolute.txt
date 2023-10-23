@@ -96,3 +96,6 @@ H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\pri.resfiles.
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\qualifiers.txt
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\qualifiers.txt.intermediate
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\MultipleQualifiersPerDimensionFound.txt
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.PostgameMode.dll
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.ResearchMode.dll
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.RestaurantMode.dll

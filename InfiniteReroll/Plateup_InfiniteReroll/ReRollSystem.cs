@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Kitchen;
-using KitchenData.Workshop;
 using KitchenMods;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Kitchen_InfiniteReroll
 {
@@ -30,14 +25,11 @@ namespace Kitchen_InfiniteReroll
 
         protected override bool IsPossible(ref InteractionData data)
         {
-            Logger.Log($"IsPossible?");
             if (data.Context.Has<CRerollShopAfterDuration>())
             {
-                Logger.Log($"Yep");
                 return true;
             }
 
-            Logger.Log("Nope");
             return false;
         }
 
@@ -64,11 +56,6 @@ namespace Kitchen_InfiniteReroll
 
             var entities = rerollEntities.ToEntityArray(Unity.Collections.Allocator.Temp);
 
-            foreach (var entity in entities)
-            {
-                Logger.Log($"OnUpdate, RerollSystem:  {EntityManager.GetComponentCount(entity)}");
-            }
-
             entities.Dispose();
         }
 
@@ -84,39 +71,55 @@ namespace Kitchen_InfiniteReroll
 
         private void ReRollAllBlueprints()
         {
+            Vector3[] positions = new Vector3[20];
+            Entity[] entityToRemove = new Entity[20];
 
+            int itemIndex = 0;
+            int letterIndex = 0;
 
             var bpQuery = Main.instance.GetBlueprintEntityQuery();
-
             var items = bpQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
             Logger.Log($"Blueprint Items Count: {items.Length}");
 
-            foreach (var it in items)
+            foreach (var item in items)
             {
-                Logger.Log($"BP component count: {EntityManager.GetComponentCount(it)}");
+                Logger.Log($"BP component count: {EntityManager.GetComponentCount(item)}");
+                positions[itemIndex] = EntityManager.GetComponentData<CPosition>(item).Position;
+                entityToRemove[itemIndex] = item;
+                itemIndex++;
             }
 
+            letterIndex = itemIndex;
 
             var letterBPQuery = Main.instance.GetLetterBlueprintQuery();
 
             var letterItems = letterBPQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
             Logger.Log($"Store Entity Count: {letterItems.Length}");
 
-            foreach (var si in letterItems)
+            foreach (var letterItem in letterItems)
             {
-                Logger.Log($"BPStoreEntity component count: {EntityManager.GetComponentCount(si)}");
+                Logger.Log($"Letter Item component count: {EntityManager.GetComponentCount(letterItem)}");
+                positions[letterIndex] = EntityManager.GetComponentData<CPosition>(letterItem).Position;
+                entityToRemove[letterIndex] = letterItem;
 
-                //var components = EntityManager.GetComponentTypes(si, Unity.Collections.Allocator.Temp);
-                //string componentsString = "";
-                //foreach (var comp in components)
-                //{
-                //    componentsString += $"({comp.TypeIndex}, {comp.GetManagedType()}), ";
-                //}
-
-                //Logger.Log($"Components on Store Items entity: {componentsString}");
-                //components.Dispose();
+                letterIndex++;
             }
 
+            int finalIndex = letterIndex;
+
+            for (int i = 0; i < finalIndex; ++i)
+            {
+                Entity newEntity = EntityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition));
+                EntityManager.SetComponentData(newEntity, new CCreateAppliance() { ID = 1063254979, });     // Note DK: 1063254979 is blueprint appliance ID
+                EntityManager.SetComponentData(newEntity, new CPosition() { Position = positions[i], });
+
+                // This now makes a blueprint, but the blueprint is empty. So I gotta figure out how to get a random blueprint :)
+            }
+
+            for (int i = 0; i < finalIndex; ++i)
+            {
+                EntityManager.DestroyEntity(entityToRemove[i]);
+            }
 
 
             items.Dispose();
