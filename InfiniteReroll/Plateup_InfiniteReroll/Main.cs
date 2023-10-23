@@ -21,22 +21,11 @@ namespace Kitchen.DKatGames.InfiniteReroll
             rerollComp.Init();
         }
 
-        // Position the element properly.
         // Adapt the standard Main/View thing to make this look proper
         // Figure out how to get to workshop
-        // Test the Release build, and see if the post build instructions are correct!
 
         protected override void OnUpdate()
         {
-            // Show the infinite reroller!
-            // BoxTest shows us that we can spawn a box, a primitive, that has collision. 
-            // So we can use that to spawn a GameObject for the reroller, with our required stuff on it
-            // But we gotta somehow find? or otherwise, rebuild? the reroll item, and place it!
-
-            // For that we need to tap into the layout.
-
-            //Logger.Log($"We have a GameInfo: {GameInfo.CurrentSetting},   {GameInfo.IsPreparationTime},   {GameInfo.CurrentDay},   {GameInfo.CurrentScene}");
-
             bool inKitchen = GameInfo.CurrentScene == SceneType.Kitchen;
             bool isPastInitialDay = GameInfo.CurrentDay >= 1;
             bool isPrepTime = GameInfo.IsPreparationTime;
@@ -78,6 +67,30 @@ namespace Kitchen.DKatGames.InfiniteReroll
         {
             var newQuery = GetEntityQuery(new QueryHelper()
                 .All(typeof(CLetterBlueprint)));
+
+            return newQuery;
+        }
+
+        public EntityQuery GetPracticeStarterQuery()
+        {
+            var newQuery = GetEntityQuery(new QueryHelper()
+                .All(typeof(CTriggerPracticeMode)));
+
+            return newQuery;
+        }
+
+        public EntityQuery GetRegularRerollQuery()
+        {
+            var newQuery = GetEntityQuery(new QueryHelper()
+                .All(typeof(CRerollShopAfterDuration)));
+
+            return newQuery;
+        }
+
+        public EntityQuery GetCInfiniteRerollQuery()
+        {
+            var newQuery = GetEntityQuery(new QueryHelper()
+                .All(typeof(CInfiniteReroll)));
 
             return newQuery;
         }

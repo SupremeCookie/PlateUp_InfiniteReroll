@@ -35,8 +35,6 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
         protected override bool ShouldAct(ref InteractionData interaction_data)
         {
-            interaction_data.Attempt.Type = InteractionType.Act;
-
             return base.ShouldAct(ref interaction_data);
         }
 
@@ -51,11 +49,6 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
         protected override void Perform(ref InteractionData data)
         {
-            foreach (var entity in Main.instance.GetAllPositionedEntities().ToEntityArray(Allocator.Temp))
-            {
-                Logger.LogEntityComponents(entity, "All-Positions");
-            }
-
             if (data.Target != Entity.Null && GameInfo.IsPreparationTime)
             {
                 Logger.Log($"Reroll All Blueprints, {Time.TotalTime}, {GameInfo.IsPreparationTime}");
@@ -93,7 +86,6 @@ namespace Kitchen.DKatGames.InfiniteReroll
                 EntityManager.DestroyEntity(item);
             }
         }
-
 
         private void CreateShop(bool isFixedLocation, Vector3 location, ShoppingTags tags)
         {

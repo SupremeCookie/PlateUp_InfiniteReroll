@@ -1,6 +1,3 @@
-H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Plateup_InfiniteReroll.dll
-H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Plateup_InfiniteReroll.pdb
-H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Plateup_InfiniteReroll.pri
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.Common.dll
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\KitchenMode.dll
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\KitchenMods.dll
@@ -79,8 +76,6 @@ H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\UnityEngine.G
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Plateup_InfiniteReroll.csproj.AssemblyReference.cache
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Plateup_InfiniteReroll.csproj.CoreCompileInputs.cache
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Plateup_InfiniteReroll.csproj.CopyComplete
-H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Plateup_InfiniteReroll.dll
-H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Plateup_InfiniteReroll.pdb
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\priconfig.xml
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\priconfig.xml.intermediate
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\unfiltered.layout.resfiles
@@ -99,3 +94,10 @@ H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\MultipleQuali
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.PostgameMode.dll
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.ResearchMode.dll
 H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.RestaurantMode.dll
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.DKatGames.InfiniteReroll.dll
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.DKatGames.InfiniteReroll.pdb
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.DKatGames.InfiniteReroll.pri
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Kitchen.DKatGames.InfiniteReroll.dll
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\obj\Debug\Kitchen.DKatGames.InfiniteReroll.pdb
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\Kitchen.GameData.dll
+H:\Modding\Plateup\InfiniteReroll\Plateup_InfiniteReroll\bin\Debug\CsvHelper.dll
