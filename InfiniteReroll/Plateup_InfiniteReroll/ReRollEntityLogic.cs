@@ -4,13 +4,9 @@ using KitchenData;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Plateup_InfiniteReroll
+namespace Kitchen_InfiniteReroll
 {
-    // Make a custom logger
-    // Make a local git repo
-    // Test the changes to see if it now appears every day.
-
-    public class ReRollLogic
+    public class ReRollEntityLogic
     {
         private static EntityManager entityManager;
 
@@ -22,10 +18,10 @@ namespace Plateup_InfiniteReroll
 
         public bool IsActive { get; private set; }
 
-        public static ReRollLogic Create(EntityManager entityManager)
+        public static ReRollEntityLogic Create(EntityManager entityManager)
         {
-            ReRollLogic.entityManager = entityManager;
-            return new ReRollLogic();
+            ReRollEntityLogic.entityManager = entityManager;
+            return new ReRollEntityLogic();
         }
 
 
@@ -79,7 +75,7 @@ namespace Plateup_InfiniteReroll
             }
 
 
-            var items = blueprints.ToEntityArray(Unity.Collections.Allocator.TempJob);
+            var items = blueprints.ToEntityArray(Unity.Collections.Allocator.Temp);
             Logger.Log($"Count: {items.Count()}");
             foreach (var item in items)
             {

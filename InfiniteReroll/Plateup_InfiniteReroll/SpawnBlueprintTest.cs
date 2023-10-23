@@ -12,7 +12,7 @@ using UnityEngine;
 // https://github.com/KitchenMods/KitchenLib/blob/7713453c436697fc807ce3efd3fa75bde964f156/KitchenLib/src/References/GDOReferences.cs#L3
 // GameDataObject All things that are things run on this. 
 
-namespace Plateup_InfiniteReroll
+namespace Kitchen_InfiniteReroll
 {
     public class SpawnBlueprintTest
     {

@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plateup_InfiniteReroll
+namespace Kitchen_InfiniteReroll
 {
-  public class ApplianceIDDictionary
-  {
-    /*    75 == Seeded Run in hub
-     *    
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
-  }
+    public class ApplianceIDDictionary
+    {
+        /*    75 == Seeded Run in hub
+         *    
+         * 
+         * 
+         * 
+         * 
+         * 
+         * 
+         */
+    }
 }

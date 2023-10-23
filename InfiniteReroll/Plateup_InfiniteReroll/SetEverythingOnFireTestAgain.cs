@@ -27,7 +27,7 @@
 //    protected override void OnUpdate()
 //    {
 
-//      //var appliances = appliancesQuery.ToEntityArray(Allocator.TempJob);
+//      //var appliances = appliancesQuery.ToEntityArray(Allocator.Temp);
 //      //string appliancesNames = "";
 //      //foreach (var appliance in appliances)
 //      //{
@@ -44,7 +44,7 @@
 //      //Logger.Log($"{Time.TotalTime},  {appliancesNames}");
 
 //      //appliances.Dispose();
-//      //var appliances = appliancesQuery.ToEntityArray(Allocator.TempJob);
+//      //var appliances = appliancesQuery.ToEntityArray(Allocator.Temp);
 //      //foreach (var appliance in appliances)
 //      //{
 //      //  EntityManager.AddComponent<CIsOnFire>(appliance);
