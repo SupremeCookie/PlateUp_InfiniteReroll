@@ -5,183 +5,184 @@ using UnityEngine;
 
 namespace Kitchen.DKatGames.InfiniteReroll
 {
-    public class ReRollEntityLogic
-    {
-        private static EntityManager entityManager;
+	public class ReRollEntityLogic
+	{
+		private static EntityManager entityManager;
 
-        private bool desiredState;
-        private EntityQuery blueprints;
+		private bool desiredState;
+		private EntityQuery blueprints;
 
-        private Entity rerollEntity = default;
-        private bool hasSetRerollEntity;
+		private Entity rerollEntity = default;
+		private bool hasSetRerollEntity;
 
-        public bool IsActive { get; private set; }
+		public bool IsActive { get; private set; }
 
-        public static ReRollEntityLogic Create(EntityManager entityManager)
-        {
-            ReRollEntityLogic.entityManager = entityManager;
-            return new ReRollEntityLogic();
-        }
-
-
-        public void Init()
-        {
-            blueprints = Main.instance.GetBlueprintEntityQuery();
-        }
-
-        public void SetActive(bool active)
-        {
-            desiredState = active;
-        }
-
-        public void OnUpdate(float deltaSeconds)
-        {
-            if (IsActive)
-            {
-                TryLoadRerollAppliance();
-
-                if (hasSetRerollEntity)
-                {
-                    //Logger.LogEntityComponents(rerollEntity, "rerollEntity");
-
-                    bool hasCreateApplianceComponent = entityManager.HasComponent<CCreateAppliance>(rerollEntity);
-                    bool hasProperlyInstantiated = !hasCreateApplianceComponent;
-                    if (hasProperlyInstantiated)
-                    {
-                        if (entityManager.HasComponent<CRerollShopAfterDuration>(rerollEntity))
-                        {
-                            entityManager.RemoveComponent<CRerollShopAfterDuration>(rerollEntity);
-                            entityManager.AddComponent<CInfiniteReroll>(rerollEntity);
-                            SetPos(GetValidWorldPos());
-                        }
-                    }
-                }
-            }
+		public static ReRollEntityLogic Create(EntityManager entityManager)
+		{
+			ReRollEntityLogic.entityManager = entityManager;
+			return new ReRollEntityLogic();
+		}
 
 
-            var items = blueprints.ToEntityArray(Unity.Collections.Allocator.Temp);
+		public void Init()
+		{
+			blueprints = Main.instance.GetBlueprintEntityQuery();
+		}
 
-            if ((!desiredState && IsActive) || (desiredState && items.Count() > 0 && !IsActive))
-            {
-                IsActive = desiredState;
+		public void SetActive(bool active)
+		{
+			desiredState = active;
+		}
 
-                if (desiredState)
-                {
-                    OnTurnedOn();
-                }
-                else
-                {
-                    OnTurnedOff();
-                }
-            }
+		public void OnUpdate(float deltaSeconds)
+		{
+			if (IsActive)
+			{
+				TryLoadRerollAppliance();
 
-            items.Dispose();
-        }
+				if (hasSetRerollEntity)
+				{
+					//Logger.LogEntityComponents(rerollEntity, "rerollEntity");
+
+					bool hasCreateApplianceComponent = entityManager.HasComponent<CCreateAppliance>(rerollEntity);
+					bool hasProperlyInstantiated = !hasCreateApplianceComponent;
+					if (hasProperlyInstantiated)
+					{
+						if (entityManager.HasComponent<CRerollShopAfterDuration>(rerollEntity))
+						{
+							entityManager.RemoveComponent<CRerollShopAfterDuration>(rerollEntity);
+							entityManager.AddComponent<CInfiniteReroll>(rerollEntity);
+							entityManager.AddComponent<CDoNotPersist>(rerollEntity);
+							SetPos(GetValidWorldPos());
+						}
+					}
+				}
+			}
 
 
-        private void TryLoadRerollAppliance()
-        {
-            if (GameData.Main == null)
-            {
-                Logger.Log($"returning as Main GameData is null");
-                return;
-            }
+			var items = blueprints.ToEntityArray(Unity.Collections.Allocator.Temp);
+
+			if ((!desiredState && IsActive) || (desiredState && items.Count() > 0 && !IsActive))
+			{
+				IsActive = desiredState;
+
+				if (desiredState)
+				{
+					OnTurnedOn();
+				}
+				else
+				{
+					OnTurnedOff();
+				}
+			}
+
+			items.Dispose();
+		}
 
 
-            const int rerollID = 1171429989;
-            if (!hasSetRerollEntity)
-            {
-                Logger.Log($"Create the reroll appliance");
+		private void TryLoadRerollAppliance()
+		{
+			if (GameData.Main == null)
+			{
+				Logger.Log($"returning as Main GameData is null");
+				return;
+			}
 
-                GameData.Main.TryGet<Appliance>(rerollID, out var applianceGameDataObject);
-                Logger.Log($"Has Appliance Data: {applianceGameDataObject != null}");
-                Logger.Log($"appliance: {applianceGameDataObject.ID}, {applianceGameDataObject.Name}, {applianceGameDataObject.Info}, {applianceGameDataObject.Prefab.name}");
 
-                hasSetRerollEntity = true;
+			const int rerollID = 1171429989;
+			if (!hasSetRerollEntity)
+			{
+				Logger.Log($"Create the reroll appliance");
 
-                var infiniteRerollQuery = Main.instance.GetCInfiniteRerollQuery();
-                var infiniteRerollItems = infiniteRerollQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-                if (infiniteRerollItems.Length > 0)
-                {
-                    Logger.Log($"Destroying {infiniteRerollItems.Length} infinite reroll entities");
-                    foreach (var item in infiniteRerollItems)
-                    {
-                        entityManager.DestroyEntity(item);
-                    }
-                }
+				GameData.Main.TryGet<Appliance>(rerollID, out var applianceGameDataObject);
+				Logger.Log($"Has Appliance Data: {applianceGameDataObject != null}");
+				Logger.Log($"appliance: {applianceGameDataObject.ID}, {applianceGameDataObject.Name}, {applianceGameDataObject.Info}, {applianceGameDataObject.Prefab.name}");
 
-                foreach (var entity in Main.instance.GetAllPositionedEntities().ToEntityArray(Unity.Collections.Allocator.Temp))
-                {
-                    Logger.LogEntityComponents(entity, "Create new Reroll Appliance");
-                }
+				hasSetRerollEntity = true;
 
-                // Alternative: Entity newEntity = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition));
-                rerollEntity = entityManager.CreateEntity();
+				var infiniteRerollQuery = Main.instance.GetCInfiniteRerollQuery();
+				var infiniteRerollItems = infiniteRerollQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
+				if (infiniteRerollItems.Length > 0)
+				{
+					Logger.Log($"Destroying {infiniteRerollItems.Length} infinite reroll entities");
+					foreach (var item in infiniteRerollItems)
+					{
+						entityManager.DestroyEntity(item);
+					}
+				}
 
-                // Alternative: entityManager.SetComponentData(newEntity, new CCreateAppliance() { ID = appliance.ID });
-                entityManager.AddComponent<CCreateAppliance>(rerollEntity);
-                var createApplianceComponent = entityManager.GetComponentData<CCreateAppliance>(rerollEntity);
-                createApplianceComponent.ID = applianceGameDataObject.ID;
-                entityManager.SetComponentData<CCreateAppliance>(rerollEntity, createApplianceComponent);
+				foreach (var entity in Main.instance.GetAllPositionedEntities().ToEntityArray(Unity.Collections.Allocator.Temp))
+				{
+					Logger.LogEntityComponents(entity, "Create new Reroll Appliance");
+				}
 
-                entityManager.AddComponent<CPosition>(rerollEntity);
-            }
-        }
+				// Alternative: Entity newEntity = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition));
+				rerollEntity = entityManager.CreateEntity();
 
-        private void OnTurnedOn()
-        {
-            SetPos(GetValidWorldPos());
-        }
+				// Alternative: entityManager.SetComponentData(newEntity, new CCreateAppliance() { ID = appliance.ID });
+				entityManager.AddComponent<CCreateAppliance>(rerollEntity);
+				var createApplianceComponent = entityManager.GetComponentData<CCreateAppliance>(rerollEntity);
+				createApplianceComponent.ID = applianceGameDataObject.ID;
+				entityManager.SetComponentData<CCreateAppliance>(rerollEntity, createApplianceComponent);
 
-        private void OnTurnedOff()
-        {
-            hasSetRerollEntity = false;
-            rerollEntity = default;
-        }
+				entityManager.AddComponent<CPosition>(rerollEntity);
+			}
+		}
 
-        private void SetPos(Vector3 position)
-        {
-            if (hasSetRerollEntity)
-            {
-                var positionComponent = entityManager.GetComponentData<CPosition>(rerollEntity);
-                positionComponent.Position = position;
-                entityManager.SetComponentData<CPosition>(rerollEntity, positionComponent);
-            }
-        }
+		private void OnTurnedOn()
+		{
+			SetPos(GetValidWorldPos());
+		}
 
-        // Note DK: We sit to the right of the practice mode item, but only if the regular reroll item isn't there
-        private Vector3 GetValidWorldPos()
-        {
-            var practiceModeQuery = Main.instance.GetPracticeStarterQuery();
-            var regularRerollQuery = Main.instance.GetRegularRerollQuery();
+		private void OnTurnedOff()
+		{
+			hasSetRerollEntity = false;
+			rerollEntity = default;
+		}
 
-            var practiceModeItems = practiceModeQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-            Debug.Assert(practiceModeItems.Length == 1, "There's more than 1 practice mode starter item, that's not good!");
+		private void SetPos(Vector3 position)
+		{
+			if (hasSetRerollEntity)
+			{
+				var positionComponent = entityManager.GetComponentData<CPosition>(rerollEntity);
+				positionComponent.Position = position;
+				entityManager.SetComponentData<CPosition>(rerollEntity, positionComponent);
+			}
+		}
 
-            var rerollItems = regularRerollQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-            Debug.Assert(rerollItems.Length <= 1, "There's more than 1 regular reroll item, that's not good!");
+		// Note DK: We sit to the right of the practice mode item, but only if the regular reroll item isn't there
+		private Vector3 GetValidWorldPos()
+		{
+			var practiceModeQuery = Main.instance.GetPracticeStarterQuery();
+			var regularRerollQuery = Main.instance.GetRegularRerollQuery();
 
-            Vector3 practiceModeLocation = new Vector3(-100, 0, 0);
-            Vector3 rerollLocation = new Vector3(-100, 0, 0);
+			var practiceModeItems = practiceModeQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
+			Debug.Assert(practiceModeItems.Length == 1, "There's more than 1 practice mode starter item, that's not good!");
 
-            foreach (var item in practiceModeItems)
-            {
-                practiceModeLocation = entityManager.GetComponentData<CPosition>(item).Position;
-            }
+			var rerollItems = regularRerollQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
+			Debug.Assert(rerollItems.Length <= 1, "There's more than 1 regular reroll item, that's not good!");
 
-            foreach (var item in rerollItems)
-            {
-                rerollLocation = entityManager.GetComponentData<CPosition>(item).Position;
-            }
+			Vector3 practiceModeLocation = new Vector3(-100, 0, 0);
+			Vector3 rerollLocation = new Vector3(-100, 0, 0);
 
-            Vector3 resultPos = practiceModeLocation + new Vector3(1, 0, 0);
-            if ((rerollLocation - resultPos).sqrMagnitude < 0.1f)
-            {
-                resultPos += new Vector3(1, 0, 0);
-            }
+			foreach (var item in practiceModeItems)
+			{
+				practiceModeLocation = entityManager.GetComponentData<CPosition>(item).Position;
+			}
 
-            Debug.Log($"Get the valid world pos: {resultPos},  {practiceModeLocation},  {rerollLocation}");
-            return resultPos;
-        }
-    }
+			foreach (var item in rerollItems)
+			{
+				rerollLocation = entityManager.GetComponentData<CPosition>(item).Position;
+			}
+
+			Vector3 resultPos = practiceModeLocation + new Vector3(1, 0, 0);
+			if ((rerollLocation - resultPos).sqrMagnitude < 0.1f)
+			{
+				resultPos += new Vector3(1, 0, 0);
+			}
+
+			Debug.Log($"Get the valid world pos: {resultPos},  {practiceModeLocation},  {rerollLocation}");
+			return resultPos;
+		}
+	}
 }

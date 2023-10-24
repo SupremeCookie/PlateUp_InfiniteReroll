@@ -141,6 +141,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>I:\Steam\steamapps\common\PlateUp\PlateUp\PlateUp_Data\Managed\Kitchen.GameData.dll</HintPath>
     </Reference>
+    <Reference Include="Kitchen.Persistence, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>I:\Steam\steamapps\common\PlateUp\PlateUp\PlateUp_Data\Managed\Kitchen.Persistence.dll</HintPath>
+    </Reference>
     <Reference Include="Kitchen.PostgameMode">
       <HintPath>I:\Steam\steamapps\common\PlateUp\PlateUp\PlateUp_Data\Managed\Kitchen.PostgameMode.dll</HintPath>
     </Reference>

@@ -1,6 +1,9 @@
 using Unity.Entities;
 
-public struct CInfiniteReroll : IComponentData
+namespace Kitchen.DKatGames.InfiniteReroll
 {
+	public struct CInfiniteReroll : IComponentData
+	{
 
+	}
 }

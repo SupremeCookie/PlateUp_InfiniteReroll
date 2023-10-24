@@ -3,129 +3,131 @@ using Unity.Entities;
 
 namespace Kitchen.DKatGames.InfiniteReroll
 {
-    public class Main : GenericSystemBase, IModSystem
-    {
-        private ReRollEntityLogic rerollComp;
-
-        public static Main instance;
-
-        protected override void Initialise()
-        {
-            Logger.Log($"Initialise Infinite Reroll");
-
-            base.Initialise();
-
-            instance = this;
-
-            rerollComp = ReRollEntityLogic.Create(EntityManager);
-            rerollComp.Init();
-        }
-
-        // Adapt the standard Main/View thing to make this look proper
-        // Figure out how to get to workshop
-
-        protected override void OnUpdate()
-        {
-            bool inKitchen = GameInfo.CurrentScene == SceneType.Kitchen;
-            bool isPastInitialDay = GameInfo.CurrentDay >= 1;
-            bool isPrepTime = GameInfo.IsPreparationTime;
-
-            if (rerollComp != null)
-            {
-                if (inKitchen && isPastInitialDay && isPrepTime)
-                {
-                    if (!rerollComp.IsActive)
-                    {
-                        rerollComp.SetActive(true);
-                    }
-                }
-                else
-                {
-                    if (rerollComp.IsActive)
-                    {
-                        rerollComp.SetActive(false);
-                    }
-                }
-
-                if (inKitchen)
-                {
-                    rerollComp.OnUpdate(Time.DeltaTime);
-                }
-            }
-        }
+	public class Main : GenericSystemBase, IModSystem
+	{
+		// Note DK: This identification stuff is only present for administration, it has no use as I don't use kitchen mod
+		public const string MOD_GUID = "InfiniteReroll.DKatGames.Kitchen";
+		public const string MOD_NAME = "Infinite Reroll";
+		public const string MOD_VERSION = "1.0.0";
+		public const string MOD_AUTHOR = "DKatGames";
+		public const string MOD_GAMEVERSION = ">=1.1.7";
 
 
-        public EntityQuery GetBlueprintEntityQuery()
-        {
-            var newQuery = GetEntityQuery(new QueryHelper()
-                .All(typeof(CApplianceBlueprint)));
+		public static Main instance;
 
-            return newQuery;
-        }
+		private ReRollEntityLogic rerollComp;
 
-        public EntityQuery GetLetterBlueprintQuery()
-        {
-            var newQuery = GetEntityQuery(new QueryHelper()
-                .All(typeof(CLetterBlueprint)));
+		protected override void Initialise()
+		{
+			Logger.Log($"Initialise {MOD_AUTHOR}'s mod: {MOD_NAME}");
 
-            return newQuery;
-        }
+			base.Initialise();
 
-        public EntityQuery GetPracticeStarterQuery()
-        {
-            var newQuery = GetEntityQuery(new QueryHelper()
-                .All(typeof(CTriggerPracticeMode)));
+			instance = this;
 
-            return newQuery;
-        }
+			rerollComp = ReRollEntityLogic.Create(EntityManager);
+			rerollComp.Init();
+		}
 
-        public EntityQuery GetRegularRerollQuery()
-        {
-            var newQuery = GetEntityQuery(new QueryHelper()
-                .All(typeof(CRerollShopAfterDuration)));
+		protected override void OnUpdate()
+		{
+			bool inKitchen = GameInfo.CurrentScene == SceneType.Kitchen;
+			bool isPastInitialDay = GameInfo.CurrentDay >= 1;
+			bool isPrepTime = GameInfo.IsPreparationTime;
 
-            return newQuery;
-        }
+			if (rerollComp != null)
+			{
+				if (inKitchen && isPastInitialDay && isPrepTime)
+				{
+					if (!rerollComp.IsActive)
+					{
+						rerollComp.SetActive(true);
+					}
+				}
+				else
+				{
+					if (rerollComp.IsActive)
+					{
+						rerollComp.SetActive(false);
+					}
+				}
 
-        public EntityQuery GetCInfiniteRerollQuery()
-        {
-            var newQuery = GetEntityQuery(new QueryHelper()
-                .All(typeof(CInfiniteReroll)));
+				if (inKitchen)
+				{
+					rerollComp.OnUpdate(Time.DeltaTime);
+				}
+			}
+		}
 
-            return newQuery;
-        }
+		public EntityQuery GetBlueprintEntityQuery()
+		{
+			var newQuery = GetEntityQuery(new QueryHelper()
+				.All(typeof(CApplianceBlueprint)));
 
-        public EntityQuery GetAllPositionedEntities()
-        {
-            var newQuery = GetEntityQuery(new QueryHelper()
-                .All(typeof(CPosition)));
+			return newQuery;
+		}
 
-            return newQuery;
+		public EntityQuery GetLetterBlueprintQuery()
+		{
+			var newQuery = GetEntityQuery(new QueryHelper()
+				.All(typeof(CLetterBlueprint)));
+
+			return newQuery;
+		}
+
+		public EntityQuery GetPracticeStarterQuery()
+		{
+			var newQuery = GetEntityQuery(new QueryHelper()
+				.All(typeof(CTriggerPracticeMode)));
+
+			return newQuery;
+		}
+
+		public EntityQuery GetRegularRerollQuery()
+		{
+			var newQuery = GetEntityQuery(new QueryHelper()
+				.All(typeof(CRerollShopAfterDuration)));
+
+			return newQuery;
+		}
+
+		public EntityQuery GetCInfiniteRerollQuery()
+		{
+			var newQuery = GetEntityQuery(new QueryHelper()
+				.All(typeof(CInfiniteReroll)));
+
+			return newQuery;
+		}
+
+		public EntityQuery GetAllPositionedEntities()
+		{
+			var newQuery = GetEntityQuery(new QueryHelper()
+				.All(typeof(CPosition)));
+
+			return newQuery;
+		}
 
 
 
+		// Note DK: Below code can be used to diagnose all objects
 
-            // Note DK: Is used to diagnose all objects
-            //var allPositionsQuery = Main.instance.GetAllPositionedEntities();
+		//var allPositionsQuery = Main.instance.GetAllPositionedEntities();
 
-            //var allPositions = allPositionsQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-            //Logger.Log($"Position Count: {allPositions.Length}");
+		//var allPositions = allPositionsQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
+		//Logger.Log($"Entity Count: {allPositions.Length}");
 
-            //foreach (var it in allPositions)
-            //{
-            //    // Remove components we don't want
-            //    // Also paste position value
-            //    Logger.Log($"Positions component count: {EntityManager.GetComponentCount(it)},  position: {EntityManager.GetComponentData<CPosition>(it).Position}");
+		//foreach (var it in allPositions)
+		//{
+		//    Logger.Log($"Entity's component count: {EntityManager.GetComponentCount(it)},  position: {EntityManager.GetComponentData<CPosition>(it).Position}");
 
-            //    var components = EntityManager.GetComponentTypes(it);
-            //    string componentsString = "";
-            //    foreach (var comp in components)
-            //    {
-            //        componentsString += $"({comp.TypeIndex}, {comp.GetManagedType()}), ";
-            //    }
+		//    var components = EntityManager.GetComponentTypes(it);
+		//    string componentsString = "";
+		//    foreach (var comp in components)
+		//    {
+		//        componentsString += $"({comp.TypeIndex}, {comp.GetManagedType()}), ";
+		//    }
 
-            //    Logger.Log($"Components on CPosition entity: {componentsString}");
-            //}
-        }
-    }
+		//    Logger.Log($"Components on CPosition entity: {componentsString}");
+		//}
+	}
 }
