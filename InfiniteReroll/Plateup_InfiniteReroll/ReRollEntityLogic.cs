@@ -51,8 +51,10 @@ namespace Kitchen.DKatGames.InfiniteReroll
 						if (entityManager.HasComponent<CRerollShopAfterDuration>(rerollEntity))
 						{
 							entityManager.RemoveComponent<CRerollShopAfterDuration>(rerollEntity);
+
 							entityManager.AddComponent<CInfiniteReroll>(rerollEntity);
 							entityManager.AddComponent<CDoNotPersist>(rerollEntity);
+
 							SetPos(GetValidWorldPos());
 						}
 					}
@@ -111,11 +113,6 @@ namespace Kitchen.DKatGames.InfiniteReroll
 					}
 				}
 
-				foreach (var entity in Main.instance.GetAllPositionedEntities().ToEntityArray(Unity.Collections.Allocator.Temp))
-				{
-					Logger.LogEntityComponents(entity, "Create new Reroll Appliance");
-				}
-
 				// Alternative: Entity newEntity = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition));
 				rerollEntity = entityManager.CreateEntity();
 
@@ -123,7 +120,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 				entityManager.AddComponent<CCreateAppliance>(rerollEntity);
 				var createApplianceComponent = entityManager.GetComponentData<CCreateAppliance>(rerollEntity);
 				createApplianceComponent.ID = applianceGameDataObject.ID;
-				entityManager.SetComponentData<CCreateAppliance>(rerollEntity, createApplianceComponent);
+				entityManager.SetComponentData(rerollEntity, createApplianceComponent);
 
 				entityManager.AddComponent<CPosition>(rerollEntity);
 			}

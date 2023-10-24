@@ -25,7 +25,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		protected override bool IsPossible(ref InteractionData data)
 		{
-			if (data.Context.Has<CRerollShopAfterDuration>())
+			if (data.Context.Has<CInfiniteReroll>())
 			{
 				return true;
 			}
@@ -35,6 +35,13 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		protected override bool ShouldAct(ref InteractionData interaction_data)
 		{
+			//Logger.Log($"Does my entity have CInfiniteReroll?: {EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target)}");
+			//Logger.LogEntityComponents(interaction_data.Target, "Entity we're trying to Should Act with's Components: ");
+			if (!EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target))
+			{
+				return false;
+			}
+
 			return base.ShouldAct(ref interaction_data);
 		}
 
