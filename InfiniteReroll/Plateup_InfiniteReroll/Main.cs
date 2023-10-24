@@ -11,6 +11,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 		public const string MOD_VERSION = "1.0.0";
 		public const string MOD_AUTHOR = "DKatGames";
 		public const string MOD_GAMEVERSION = ">=1.1.7";
+		public const string MOD_STEAMWORK_ID = "3060007269";
 
 
 		public static Main instance;
