@@ -8,7 +8,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 		// Note DK: This identification stuff is only present for administration, it has no use as I don't use kitchen mod
 		public const string MOD_GUID = "InfiniteReroll.DKatGames.Kitchen";
 		public const string MOD_NAME = "Infinite Reroll";
-		public const string MOD_VERSION = "1.0.0";
+		public const string MOD_VERSION = "1.0.1";
 		public const string MOD_AUTHOR = "DKatGames";
 		public const string MOD_GAMEVERSION = ">=1.1.7";
 		public const string MOD_STEAMWORK_ID = "3060007269";

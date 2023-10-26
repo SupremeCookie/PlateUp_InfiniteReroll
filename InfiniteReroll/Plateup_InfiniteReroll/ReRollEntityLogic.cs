@@ -51,11 +51,18 @@ namespace Kitchen.DKatGames.InfiniteReroll
 						if (entityManager.HasComponent<CRerollShopAfterDuration>(rerollEntity))
 						{
 							entityManager.RemoveComponent<CRerollShopAfterDuration>(rerollEntity);
+						}
 
+
+						if (!entityManager.HasComponent<CInfiniteReroll>(rerollEntity))
+						{
 							entityManager.AddComponent<CInfiniteReroll>(rerollEntity);
-							entityManager.AddComponent<CDoNotPersist>(rerollEntity);
-
 							SetPos(GetValidWorldPos());
+						}
+
+						if (!entityManager.HasComponent<CDoNotPersist>(rerollEntity))
+						{
+							entityManager.AddComponent<CDoNotPersist>(rerollEntity);
 						}
 					}
 				}
