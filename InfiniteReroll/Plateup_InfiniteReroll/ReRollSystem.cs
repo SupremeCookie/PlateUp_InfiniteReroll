@@ -1,4 +1,5 @@
-﻿using KitchenData;
+﻿using System.Linq;
+using KitchenData;
 using KitchenMods;
 using Unity.Collections;
 using Unity.Entities;
@@ -9,9 +10,9 @@ namespace Kitchen.DKatGames.InfiniteReroll
 	public class ReRollSystem : InteractionSystem, IModSystem
 	{
 		protected override InteractionMode RequiredMode => InteractionMode.Appliances;
-		protected override bool RequireHold => true;
-		protected override bool AllowActOrGrab => true;
-		protected override bool RequirePress => false;
+		//protected override bool RequireHold => true;
+		//protected override bool AllowActOrGrab => true;
+		protected override bool RequirePress => true;
 		protected override InteractionType RequiredType => InteractionType.Act;
 
 		private EntityQuery rerollEntities;
@@ -25,34 +26,70 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		protected override bool IsPossible(ref InteractionData data)
 		{
-			if (data.Context.Has<CInfiniteReroll>())
+			if (EntityManager.HasComponent<CInfiniteReroll>(data.Target))
 			{
+				Logger.Log($"We've got the CInfiniteReroll component present");
 				return true;
 			}
 
+			Logger.Log($"We do NOT have the component");
 			return false;
 		}
 
+		private float rerollAfterDuration = 2f;
+		private bool shouldReroll = false;
+
 		protected override bool ShouldAct(ref InteractionData interaction_data)
 		{
-			//Logger.Log($"Does my entity have CInfiniteReroll?: {EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target)}");
-			//Logger.LogEntityComponents(interaction_data.Target, "Entity we're trying to Should Act with's Components: ");
-			if (!EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target))
-			{
-				return false;
-			}
+			Logger.Log($"Does my entity have CInfiniteReroll?: {EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target)}");
+			Logger.LogEntityComponents(interaction_data.Target, "Entity we're trying to Should Act with's Components: ");
+			Logger.Log($"ShouldAct:{base.ShouldAct(ref interaction_data)},  {interaction_data.Attempt.IsHeld}, {interaction_data.ShouldAct}, {interaction_data.Attempt.Type}, {interaction_data.Attempt.Result}, {interaction_data.Attempt.Mode}" +
+				$",  {interaction_data.Attempt.TransferOnly},  {interaction_data.Attempt.Process},  {interaction_data.Attempt.PerformedBy}");
 
 			return base.ShouldAct(ref interaction_data);
 		}
 
-		protected override void OnUpdate()
-		{
-			base.OnUpdate();
+		//protected override bool ShouldAct(ref InteractionData interaction_data)
+		//{
+		//	Logger.Log($"Does my entity have CInfiniteReroll?: {EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target)},   hasAttemptInteracton: {EntityManager.HasComponent<CAttemptingInteraction>(interaction_data.Target)}");
+		//	Logger.LogEntityComponents(interaction_data.Target, "Entity we're trying to Should Act with's Components: ");
+		//	bool shouldAct = base.ShouldAct(ref interaction_data);
+		//	if (!EntityManager.HasComponent<CInfiniteReroll>(interaction_data.Target))
+		//	{
+		//		rerollAfterDuration = 2f;
+		//		shouldReroll = false;
+		//		return false;
+		//	}
 
-			var entities = rerollEntities.ToEntityArray(Unity.Collections.Allocator.Temp);
+		//	//shouldReroll = true;
 
-			entities.Dispose();
-		}
+		//	Logger.Log($"ShouldAct: {shouldAct} {base.ShouldAct(ref interaction_data)},  {interaction_data.Attempt.IsHeld}, {interaction_data.ShouldAct}, {interaction_data.Attempt.Type}, {interaction_data.Attempt.Mode}");
+
+		//	interaction_data.Attempt.Type = InteractionType.Act;
+
+		//	Logger.Log($"ShouldAct: {shouldAct} {base.ShouldAct(ref interaction_data)},  {interaction_data.Attempt.IsHeld}, {interaction_data.ShouldAct}, {interaction_data.Attempt.Type}, {interaction_data.Attempt.Mode}");
+		//	return base.ShouldAct(ref interaction_data);
+		//}
+
+		//protected override void OnUpdate()
+		//{
+		//	//if (shouldReroll)
+		//	//{
+		//	//	rerollAfterDuration -= Time.DeltaTime;
+		//	//	if (rerollAfterDuration < 0)
+		//	//	{
+		//	//		rerollAfterDuration = 2f;
+		//	//		EntityManager.CreateEntity(typeof(CShopRerollRequest));
+		//	//		//EntityManager.AddComponent<CShopRerollRequest>(rerollEntities.ToEntityArray(Allocator.Temp).FirstOrDefault());
+		//	//	}
+		//	//}
+
+		//	//base.OnUpdate();
+
+		//	//var entities = rerollEntities.ToEntityArray(Unity.Collections.Allocator.Temp);
+
+		//	//entities.Dispose();
+		//}
 
 		protected override void Perform(ref InteractionData data)
 		{
