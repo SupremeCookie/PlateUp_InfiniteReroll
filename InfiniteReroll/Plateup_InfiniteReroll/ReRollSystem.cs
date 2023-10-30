@@ -30,7 +30,17 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		protected override void OnUpdate()
 		{
+			if (rerollEntities.IsEmpty)
+			{
+				return;
+			}
+
 			var entities = rerollEntities.ToEntityArray(Allocator.Temp);
+			if (entities == null || entities.Length == 0)
+			{
+				return;
+			}
+
 			foreach (var entity in entities)
 			{
 				if (EntityManager.GetComponentData<CTakesDuration>(entity).Remaining <= 0f)

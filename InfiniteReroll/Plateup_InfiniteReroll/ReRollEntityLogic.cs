@@ -2,6 +2,7 @@
 using KitchenData;
 using Unity.Entities;
 using UnityEngine;
+using Windows.ApplicationModel.Activation;
 
 namespace Kitchen.DKatGames.InfiniteReroll
 {
@@ -14,6 +15,11 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		private Entity rerollEntity = default;
 		private bool hasSetRerollEntity;
+
+		private bool hasRemovedRerollElement;
+		private bool hasAddedDoNotPersist;
+		private bool hasAddedInfiniteReroll;
+		private bool hasFinishedInitializing;
 
 		public bool IsActive { get; private set; }
 
@@ -34,44 +40,69 @@ namespace Kitchen.DKatGames.InfiniteReroll
 			desiredState = active;
 		}
 
+		private bool debugHasSet = false;
 		public void OnUpdate(float deltaSeconds)
 		{
+			Logger.Log($"Update: {deltaSeconds},  isActive: {IsActive},  desiredState: {desiredState}");
+
 			if (IsActive)
 			{
-				TryLoadRerollAppliance();
+				// Check if element is there
+				// If not, try to make it, only do this every 1/10th of a second
+				// If there, check if clean, if not, clean up
+				// If there, check if properly positioned, if not, do so
 
-				if (hasSetRerollEntity)
+				bool elementIsPresent = debugHasSet;
+				if (!elementIsPresent)
 				{
-					//Logger.LogEntityComponents(rerollEntity, "rerollEntity");
-
-					bool hasCreateApplianceComponent = entityManager.HasComponent<CCreateAppliance>(rerollEntity);
-					bool hasProperlyInstantiated = !hasCreateApplianceComponent;
-					if (hasProperlyInstantiated)
-					{
-						if (entityManager.HasComponent<CRerollShopAfterDuration>(rerollEntity))
-						{
-							entityManager.RemoveComponent<CRerollShopAfterDuration>(rerollEntity);
-						}
+					Logger.Log($"Trying to make new CInfiniteReroll");
+					Entity newE = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition), typeof(CInfiniteReroll), typeof(CDoNotPersist));
 
 
-						if (!entityManager.HasComponent<CInfiniteReroll>(rerollEntity))
-						{
-							entityManager.AddComponent<CInfiniteReroll>(rerollEntity);
-							SetPos(GetValidWorldPos());
-						}
-
-						if (!entityManager.HasComponent<CDoNotPersist>(rerollEntity))
-						{
-							entityManager.AddComponent<CDoNotPersist>(rerollEntity);
-						}
-					}
+					Logger.Log($"Have we created the new entity?: {newE != Entity.Null}");
+					debugHasSet = true;
 				}
+
+
+				//TryLoadRerollAppliance();
+
+				//if (hasSetRerollEntity && !hasFinishedInitializing)
+				//{
+				//	hasFinishedInitializing = hasRemovedRerollElement && hasAddedDoNotPersist && hasAddedInfiniteReroll;
+
+				//	Logger.Log($"isPrep: {GameInfo.IsPreparationTime}");
+				//	Logger.LogEntityComponents(rerollEntity, "rerollEntity");
+
+				//	bool hasCreateApplianceComponent = entityManager.HasComponent<CCreateAppliance>(rerollEntity);
+				//	bool hasProperlyInstantiated = !hasCreateApplianceComponent;
+				//	if (hasProperlyInstantiated)
+				//	{
+				//		if (entityManager.HasComponent<CRerollShopAfterDuration>(rerollEntity))
+				//		{
+				//			entityManager.RemoveComponent<CRerollShopAfterDuration>(rerollEntity);
+				//			hasRemovedRerollElement = true;
+				//		}
+
+				//		if (!entityManager.HasComponent<CInfiniteReroll>(rerollEntity))
+				//		{
+				//			entityManager.AddComponent<CInfiniteReroll>(rerollEntity);
+				//			hasAddedInfiniteReroll = true;
+				//			SetPos(GetValidWorldPos());
+				//		}
+
+				//		if (!entityManager.HasComponent<CDoNotPersist>(rerollEntity))
+				//		{
+				//			entityManager.AddComponent<CDoNotPersist>(rerollEntity);
+				//			hasAddedDoNotPersist = true;
+				//		}
+				//	}
+				//}
 			}
 
 
 			var items = blueprints.ToEntityArray(Unity.Collections.Allocator.Temp);
 
-			if ((!desiredState && IsActive) || (desiredState && items.Count() > 0 && !IsActive))
+			if ((!desiredState && IsActive) || (desiredState && items.Length > 0 && !IsActive))
 			{
 				IsActive = desiredState;
 
@@ -84,8 +115,6 @@ namespace Kitchen.DKatGames.InfiniteReroll
 					OnTurnedOff();
 				}
 			}
-
-			items.Dispose();
 		}
 
 
@@ -120,6 +149,8 @@ namespace Kitchen.DKatGames.InfiniteReroll
 					}
 				}
 
+
+
 				// Alternative: Entity newEntity = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition));
 				rerollEntity = entityManager.CreateEntity();
 
@@ -135,20 +166,28 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		private void OnTurnedOn()
 		{
-			SetPos(GetValidWorldPos());
+			//SetPos(GetValidWorldPos());
 		}
 
 		private void OnTurnedOff()
 		{
 			hasSetRerollEntity = false;
-			rerollEntity = default;
+			rerollEntity = Entity.Null;
+
+			hasRemovedRerollElement = false;
+			hasAddedDoNotPersist = false;
+			hasAddedInfiniteReroll = false;
+			hasFinishedInitializing = false;
 		}
 
 		private void SetPos(Vector3 position)
 		{
+			Logger.Log($"Set Position: ({position}),   hasSet: {hasSetRerollEntity} isnull?: ({rerollEntity.Equals(Entity.Null)})");
 			if (hasSetRerollEntity)
 			{
+				Logger.Log($"EntityManager null? : {entityManager == null}");
 				var positionComponent = entityManager.GetComponentData<CPosition>(rerollEntity);
+				Logger.Log($"positionComponent?: ({positionComponent})");
 				positionComponent.Position = position;
 				entityManager.SetComponentData<CPosition>(rerollEntity, positionComponent);
 			}
