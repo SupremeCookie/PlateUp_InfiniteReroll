@@ -43,7 +43,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 			foreach (var entity in entities)
 			{
-				if (EntityManager.GetComponentData<CTakesDuration>(entity).Remaining <= 0f)
+				if (EntityManager.HasComponent<CTakesDuration>(entity) && EntityManager.GetComponentData<CTakesDuration>(entity).Remaining <= 0f)
 				{
 					ReRollAllBlueprints();
 				}
