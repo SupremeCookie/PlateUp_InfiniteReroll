@@ -121,6 +121,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CInfiniteReroll.cs" />
+    <Compile Include="CleanupReroll.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ReRollEntityLogic.cs" />
     <Compile Include="Main.cs" />

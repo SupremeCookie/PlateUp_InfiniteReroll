@@ -55,7 +55,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 				if (inKitchen)
 				{
-					rerollComp.OnUpdate(Time.DeltaTime);
+					rerollComp.OnUpdate(/*Time.DeltaTime*/);    // Time is sometimes null
 				}
 			}
 		}
