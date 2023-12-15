@@ -57,33 +57,27 @@ namespace Kitchen.DKatGames.InfiniteReroll
 				bool elementIsPresent = rerollItems.Length > 0;
 				if (!elementIsPresent && createDelay <= 0)
 				{
-					//Logger.Log($"Trying to make new CInfiniteReroll");
 					Entity newE = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition), typeof(CInfiniteReroll), typeof(CDoNotPersist));
-					//Entity newE = entityManager.CreateEntity(typeof(CPosition), typeof(CInfiniteReroll), typeof(CDoNotPersist), typeof(CAppliance), typeof(CApplyingProcess), typeof(CDestroyApplianceAtDay),
-					//	typeof(CRequiresGenericInputIndicator), typeof(CIsInteractive), typeof(CRequiresView), typeof(CTakesDuration), typeof(CDisplayDuration), typeof(CLinkedView), typeof(CBeingActedOnBy),
-					//	typeof(CImmovable), typeof(CFixedRotation), typeof(CDisableAutomation), typeof(CAttachments));
 
 					SetPos(newE, GetValidWorldPos());
 					entityManager.SetComponentData(newE, new CCreateAppliance() { ID = rerollApplianceID, });
-					// entityManager.SetComponentData(newE, new CRequiresGenericInputIndicator() { Message = InputIndicatorMessage.Reroll, });
-					// entityManager.SetComponentData(newE, new CRequiresView() { Type = ViewType.Appliance, ViewMode = ViewMode.World, PhysicsDriven = false, });
 
 					createDelay = 10;
 				}
 				else if (elementIsPresent)
 				{
-					int index = 0;
+					//int index = 0;
 					//Logger.Log($"Trying to find reroll items,  did we?: {rerollItems.Length}");
+
 					foreach (var reroll in rerollItems)
 					{
+#if false
 						Logger.Log($"---");
 						Logger.LogEntityComponents(reroll, $" i ({index}) ");
 						index++;
 
 						var applianceData = entityManager.GetComponentData<CAppliance>(reroll);
 						Logger.Log($"{applianceData.Layer},  {applianceData.Layer}");
-
-
 
 						var genericInputIndicator = entityManager.GetComponentData<CRequiresGenericInputIndicator>(reroll);
 						Logger.Log($"genericInputIndicator {genericInputIndicator.Message.ToString()}");
@@ -111,7 +105,7 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 						var takesDuration = entityManager.GetComponentData<CTakesDuration>(reroll);
 						Logger.Log($"takesDuration {takesDuration.Active}, {takesDuration.PreserveProgress}, {takesDuration.RequiresRelease}, {takesDuration.CurrentChange}, {takesDuration.Remaining}, {takesDuration.Total}");
-
+#endif
 
 
 
@@ -121,21 +115,6 @@ namespace Kitchen.DKatGames.InfiniteReroll
 						{
 							entityManager.RemoveComponent<CRerollShopAfterDuration>(reroll);
 						}
-
-						//var requiresVieWdata = entityManager.GetComponentData<CRequiresView>(reroll);
-						//Logger.Log($"{requiresVieWdata.ViewMode},  {requiresVieWdata.PhysicsDriven},  {requiresVieWdata.Type}");
-
-						//var linkedViewData = entityManager.GetComponentData<CLinkedView>(reroll);
-						//Logger.Log($"{linkedViewData.DoNotUpdate},  {linkedViewData.Identifier}");
-
-
-						//var viewManagerInfiniteReroll = entityViewManager.GetQuery(new QueryHelper()
-						//	.All(typeof(CInfiniteReroll)));
-
-
-
-						// Position set
-						//SetPos(reroll, GetValidWorldPos());
 					}
 				}
 

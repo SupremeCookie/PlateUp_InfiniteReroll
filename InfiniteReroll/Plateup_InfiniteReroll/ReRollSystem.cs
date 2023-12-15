@@ -57,12 +57,12 @@ namespace Kitchen.DKatGames.InfiniteReroll
 		{
 			var bpQuery = Main.instance.GetBlueprintEntityQuery();
 			var items = bpQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-			Logger.Log($"Blueprint Items Count: {items.Length}");
+			//Logger.Log($"Blueprint Items Count: {items.Length}");
 			RerollEntities(ref items);
 
 			var letterBPQuery = Main.instance.GetLetterBlueprintQuery();
 			var letterItems = letterBPQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
-			Logger.Log($"Store Entity Count: {letterItems.Length}");
+			//Logger.Log($"Store Entity Count: {letterItems.Length}");
 			RerollEntities(ref letterItems);
 		}
 
