@@ -1,14 +1,15 @@
-﻿using KitchenMods;
+﻿using KitchenData;
+using KitchenMods;
 using Unity.Entities;
 
 namespace Kitchen.DKatGames.InfiniteReroll
 {
-	public class Main : GenericSystemBase, IModSystem
+	public class Main : GenericSystemBase, IModSystem, IModInitializer
 	{
 		// Note DK: This identification stuff is only present for administration, it has no use as I don't use kitchen mod
 		public const string MOD_GUID = "InfiniteReroll.DKatGames.Kitchen";
 		public const string MOD_NAME = "Infinite Reroll";
-		public const string MOD_VERSION = "1.0.1";
+		public const string MOD_VERSION = "1.1.0";
 		public const string MOD_AUTHOR = "DKatGames";
 		public const string MOD_GAMEVERSION = ">=1.1.7";
 		public const string MOD_STEAMWORK_ID = "3060007269";
@@ -26,9 +27,22 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 			instance = this;
 
-			rerollComp = ReRollEntityLogic.Create(EntityManager);
+			rerollComp = ReRollEntityLogic.Create(EntityManager, EntityViewManager);
 			rerollComp.Init();
 		}
+
+		public void PostActivate(Mod mod) { }
+
+		public void PreInject()
+		{
+			if (GameData.Main.TryGet<Appliance>(ReRollEntityLogic.rerollApplianceID, out Appliance rerollAppliance)
+				&& rerollAppliance.Prefab != null && rerollAppliance.Prefab.GetComponent<InfiniteRerollSubview>() == null)
+			{
+				rerollAppliance.Prefab.AddComponent<InfiniteRerollSubview>();
+			}
+		}
+
+		public void PostInject() { }
 
 		protected override void OnUpdate()
 		{

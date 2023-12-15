@@ -1,13 +1,16 @@
-﻿using Unity.Entities;
+﻿using System.Linq;
+using KitchenData;
+using Unity.Entities;
 using UnityEngine;
 
 namespace Kitchen.DKatGames.InfiniteReroll
 {
 	public class ReRollEntityLogic
 	{
-		private const int rerollApplianceID = 1171429989;
+		public const int rerollApplianceID = 1171429989;
 
 		private static EntityManager entityManager;
+		private static EntityViewManager entityViewManager;
 
 		private bool desiredState;
 		private EntityQuery blueprints;
@@ -17,9 +20,10 @@ namespace Kitchen.DKatGames.InfiniteReroll
 
 		public bool IsActive { get; private set; }
 
-		public static ReRollEntityLogic Create(EntityManager entityManager)
+		public static ReRollEntityLogic Create(EntityManager entityManager, EntityViewManager entityViewManager)
 		{
 			ReRollEntityLogic.entityManager = entityManager;
+			ReRollEntityLogic.entityViewManager = entityViewManager;
 			return new ReRollEntityLogic();
 		}
 
@@ -55,21 +59,61 @@ namespace Kitchen.DKatGames.InfiniteReroll
 				{
 					//Logger.Log($"Trying to make new CInfiniteReroll");
 					Entity newE = entityManager.CreateEntity(typeof(CCreateAppliance), typeof(CPosition), typeof(CInfiniteReroll), typeof(CDoNotPersist));
+					//Entity newE = entityManager.CreateEntity(typeof(CPosition), typeof(CInfiniteReroll), typeof(CDoNotPersist), typeof(CAppliance), typeof(CApplyingProcess), typeof(CDestroyApplianceAtDay),
+					//	typeof(CRequiresGenericInputIndicator), typeof(CIsInteractive), typeof(CRequiresView), typeof(CTakesDuration), typeof(CDisplayDuration), typeof(CLinkedView), typeof(CBeingActedOnBy),
+					//	typeof(CImmovable), typeof(CFixedRotation), typeof(CDisableAutomation), typeof(CAttachments));
 
 					SetPos(newE, GetValidWorldPos());
 					entityManager.SetComponentData(newE, new CCreateAppliance() { ID = rerollApplianceID, });
+					// entityManager.SetComponentData(newE, new CRequiresGenericInputIndicator() { Message = InputIndicatorMessage.Reroll, });
+					// entityManager.SetComponentData(newE, new CRequiresView() { Type = ViewType.Appliance, ViewMode = ViewMode.World, PhysicsDriven = false, });
 
-					//rerollEntityIndex = newE.Index;
 					createDelay = 10;
 				}
 				else if (elementIsPresent)
 				{
-					//int index = 0;
+					int index = 0;
 					//Logger.Log($"Trying to find reroll items,  did we?: {rerollItems.Length}");
 					foreach (var reroll in rerollItems)
 					{
-						//Logger.LogEntityComponents(reroll, $" i ({index}) ");
-						//index++;
+						Logger.Log($"---");
+						Logger.LogEntityComponents(reroll, $" i ({index}) ");
+						index++;
+
+						var applianceData = entityManager.GetComponentData<CAppliance>(reroll);
+						Logger.Log($"{applianceData.Layer},  {applianceData.Layer}");
+
+
+
+						var genericInputIndicator = entityManager.GetComponentData<CRequiresGenericInputIndicator>(reroll);
+						Logger.Log($"genericInputIndicator {genericInputIndicator.Message.ToString()}");
+
+						var requiresView = entityManager.GetComponentData<CRequiresView>(reroll);
+						Logger.Log($"requiresView {requiresView.ViewMode},  {requiresView.Type},  {requiresView.PhysicsDriven}");
+
+						if (entityManager.HasComponent<CLinkedView>(reroll))
+						{
+							var linkedViewData = entityManager.GetComponentData<CLinkedView>(reroll);
+							Logger.Log($"linkedView {linkedViewData.DoNotUpdate},  {linkedViewData.Identifier.Identifier}");
+						}
+
+						var actedOnBy = entityManager.GetBuffer<CBeingActedOnBy>(reroll);
+						for (int i = 0; i < actedOnBy.Length; ++i)
+						{
+							Logger.Log($"actedOnBy {i} : {actedOnBy[i].Interactor},  {actedOnBy[i].IsTransferOnly}");
+						}
+
+						var attachments = entityManager.GetBuffer<CAttachments>(reroll);
+						for (int i = 0; i < attachments.Length; ++i)
+						{
+							Logger.Log($"attachment {i} : {attachments[i].Entity}");
+						}
+
+						var takesDuration = entityManager.GetComponentData<CTakesDuration>(reroll);
+						Logger.Log($"takesDuration {takesDuration.Active}, {takesDuration.PreserveProgress}, {takesDuration.RequiresRelease}, {takesDuration.CurrentChange}, {takesDuration.Remaining}, {takesDuration.Total}");
+
+
+
 
 						// Cleanup
 						bool shouldCleanEntity = entityManager.HasComponent<CRerollShopAfterDuration>(reroll);
@@ -78,8 +122,20 @@ namespace Kitchen.DKatGames.InfiniteReroll
 							entityManager.RemoveComponent<CRerollShopAfterDuration>(reroll);
 						}
 
+						//var requiresVieWdata = entityManager.GetComponentData<CRequiresView>(reroll);
+						//Logger.Log($"{requiresVieWdata.ViewMode},  {requiresVieWdata.PhysicsDriven},  {requiresVieWdata.Type}");
+
+						//var linkedViewData = entityManager.GetComponentData<CLinkedView>(reroll);
+						//Logger.Log($"{linkedViewData.DoNotUpdate},  {linkedViewData.Identifier}");
+
+
+						//var viewManagerInfiniteReroll = entityViewManager.GetQuery(new QueryHelper()
+						//	.All(typeof(CInfiniteReroll)));
+
+
+
 						// Position set
-						SetPos(reroll, GetValidWorldPos());
+						//SetPos(reroll, GetValidWorldPos());
 					}
 				}
 
